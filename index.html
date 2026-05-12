@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarceLOJA - Sistema PDV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-wrapper">
+                <span class="logo-main">Marce</span><span class="logo-sub">LOJA</span>
+            </div>
+            <div class="header-status">SISTEMA PDV • PROFESSIONAL</div>
+        </header>
+
+        <div class="grid">
+            <div class="painel-entrada">
+                <h3 id="titulo-form">Novo Produto</h3>
+                <input id="nome" type="text" placeholder="Nome do Produto" autofocus />
+                <div class="input-group-row">
+                    <input id="preco" type="number" step="0.01" placeholder="Preço R$" />
+                    <input id="quantidade" type="number" value="1" min="1" />
+                </div>
+                <input id="desconto" type="number" placeholder="Desconto %" />
+                <button id="btn-acao" class="btn-adicionar" onclick="adicionar(event)">ADICIONAR (Enter)</button>
+                <button id="btn-cancelar" onclick="cancelarEdicao()" style="display:none; margin-top:10px; width:100%; background:#636e72; color:white; padding:10px; border:none; border-radius:5px;">Cancelar Edição (Esc)</button>
+                
+                <h3 style="margin-top: 40px">🔍 Pesquisar</h3>
+                <input id="busca" oninput="buscar()" placeholder="Filtrar itens..." />
+                
+                <h3 style="margin-top: 30px">📊 Relatórios</h3>
+                <button class="btn-adicionar" style="background: var(--secundaria); color: var(--primaria);" onclick="window.open('historico/historico.html')">Ver Histórico de Vendas</button>
+            </div>
+
+            <div class="painel-carrinho">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>🛒 Carrinho de Compras</h3>
+                    <button id="removeAll" onclick="removerTudo()" style="display: none;">ESVAZIAR CARRINHO</button>
+                </div>
+
+                <div id="lista" class="lista-container">
+                    <p style="color:gray; text-align:center; margin-top:20px;">O carrinho está vazio.</p>
+                </div>
+
+                <div id="total-area">
+                    <span style="font-size: 0.9rem; opacity: 0.8;">VALOR TOTAL A PAGAR</span>
+                    <h2 style="margin: 5px 0 0 0;">R$ <span id="total">0.00</span></h2>
+                </div>
+
+                <div class="painel-pagamento">
+                    <h3>MÉTODO DE PAGAMENTO</h3>
+                    <div class="metodos-grid">
+                        <label class="metodo-item">
+                            <input type="radio" name="pagamento" value="Cartão" onclick="setPagamento(this.value)">
+                            <div class="metodo-card">
+                                <img src="Ícones/cartao.png" alt="Cartão">
+                                <span>Cartão</span>
+                            </div>
+                        </label>
+                        <label class="metodo-item">
+                            <input type="radio" name="pagamento" value="Dinheiro" onclick="setPagamento(this.value)">
+                            <div class="metodo-card">
+                                <img src="Ícones/dinheiro.png" alt="Dinheiro">
+                                <span>Dinheiro</span>
+                            </div>
+                        </label>
+                        <label class="metodo-item">
+                            <input type="radio" name="pagamento" value="Pix" onclick="setPagamento(this.value)">
+                            <div class="metodo-card">
+                                <img src="Ícones/pix.png" alt="Pix">
+                                <span>Pix</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div id="detalhes-pagamento" style="margin-top: 15px; min-height: 80px;">
+                        <div id="secao-cartao" style="display: none;">
+                            <select id="tipo-cartao" class="input-pdv" onchange="toggleParcelas()">
+                                <option value="Crédito">Crédito</option>
+                                <option value="Débito">Débito</option>
+                            </select>
+                            <div id="wrapper-parcelas" style="margin-top: 10px;">
+                                <select id="parcelas" class="input-pdv">
+                                    <option value="1">1x (À vista)</option>
+                                    <option value="2">2x</option>
+                                    <option value="3">3x</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="secao-dinheiro" style="display: none;">
+                            <input type="number" id="valor-pago" class="input-pdv" placeholder="Valor recebido" oninput="calcularTroco()">
+                            <p id="display-troco" style="font-weight: bold; margin-top: 5px; color: var(--sucesso);">Troco: R$ 0.00</p>
+                        </div>
+                        <div id="secao-pix" style="display: none; text-align: center;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=https://www.youtube.com/shorts/dQw4w9WgXcQ" alt="QR Pix">
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="formaPagamento" value="">
+                    <button class="btn-finalizar" onclick="finalizar()" style="margin-top: 10px; width: 100%;">FINALIZAR VENDA (Enter)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dialog id="modalConfirmacao">
+        <div class="popup-content">
+            <h2>Remover Item?</h2>
+            <div class="popup-actions">
+                <button id="btnConfirmarRemover" class="btn-confirm-pop danger">Remover</button>
+                <button onclick="getEl('modalConfirmacao').close()" class="btn-cancel-pop">Cancelar</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="CFPopup">
+        <div class="popup-content">
+            <span style="font-size: 50px;">✅</span>
+            <h2>Venda Finalizada!</h2>
+            <div class="popup-actions" style="flex-direction: column;"> 
+                <a href="Recibo/recibo.html" target="_blank" class="btn-confirm-pop" style="text-decoration: none; width: 100%; text-align: center;">Imprimir Recibo (Enter)</a>
+                <button id="closeButton" class="btn-cancel-pop">Nova Venda (Esc)</button>
+            </div>
+        </div>
+    </dialog>
+
+    <dialog id="removeAllPopup">
+        <div class="popup-content">
+            <h2>Esvaziar Carrinho?</h2>
+            <div class="popup-actions">
+                <button id="confirmRemoveAll" class="btn-confirm-pop danger">Sim, Esvaziar</button>
+                <button onclick="getEl('removeAllPopup').close()" class="btn-cancel-pop">Cancelar</button>
+            </div>
+        </div>
+    </dialog>
+
+    <script src="script.js"></script>
+</body>
+</html>
