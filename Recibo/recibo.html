@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo de Venda - MarceLOJA</title>
+    
+    <!-- FONTES E ESTILOS ESPECÍFICOS
+         O arquivo recibo.css deve conter regras de @media print para garantir
+         que os botões não apareçam no papel impresso. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="recibo.css">
+</head>
+<body>
+
+    <!-- CONTAINER PRINCIPAL (#recibo)
+         Este é o elemento mais importante. O arquivo recibo.js irá injetar
+         todo o conteúdo (logo, itens, total e QR Code) dentro desta div. -->
+    <div id="recibo" class="recibo-container"></div>
+
+    <!-- ÁREA DE INTERAÇÃO (BOTOES-ACAO)
+         Estes botões são utilitários para o operador. Geralmente são configurados
+         no CSS para serem ocultados durante a impressão real. -->
+    <div class="botoes-acao">
+        <button class="btn-print" onclick="window.print()">Imprimir Recibo (Enter)</button>
+        <button class="btn-voltar" onclick="window.close()">Fechar Janela (Esc)</button>
+    </div>
+
+    <!-- LÓGICA DE DADOS: Gera o conteúdo dinâmico -->
+    <script src="recibo.js"></script>
+
+    <!-- LÓGICA DE INTERFACE: Atalhos e comportamentos da janela -->
+    <script>
+        /**
+         * ATALHOS DE TECLADO
+         * Objetivo: Manter a agilidade do PDV. O operador não precisa usar o mouse
+         * para imprimir ou fechar a aba de recibo.
+         */
+        document.addEventListener('keydown', (e) => {
+            // Enter dispara a caixa de diálogo de impressão do sistema
+            if (e.key === 'Enter') window.print();
+            
+            // Escape fecha a aba atual (se tiver sido aberta via window.open)
+            if (e.key === 'Escape') window.close();
+        });
+
+        /**
+         * GESTÃO DE MEMÓRIA (OPCIONAL)
+         * Verifica após 1 minuto se a janela ainda está aberta, apenas para log de controle.
+         */
+        setTimeout(() => {
+            if (!window.closed) {
+                console.log("O recibo ainda está aberto para consulta.");
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
