@@ -12,6 +12,8 @@ let indexEdicao = null;       // Guarda a posição do item caso o usuário cliq
 let indexParaRemover = null;  // Armazena temporariamente o item que será excluído via modal
 let editMode = false;         // Variável de controle: define se o botão principal Adiciona ou Salva Alteração
 
+salvarERenderizar();
+
 // Atalho para não precisar digitar 'document.getElementById' toda vez
 const getEl = id => document.getElementById(id);
 
