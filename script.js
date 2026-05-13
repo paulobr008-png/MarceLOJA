@@ -216,7 +216,7 @@ function finalizar() {
     const venda = {
         id: Date.now(), // Gera um ID único baseado no tempo exato
         data: new Date().toLocaleString(),
-        itens: [...carrinho],
+        itens: carrinho,
         total: totalVenda,
         pagamento: detalheFinal
     };
