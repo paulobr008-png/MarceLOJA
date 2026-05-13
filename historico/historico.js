@@ -44,7 +44,7 @@ function renderHistorico() {
      * RENDERIZAÇÃO DOS CARDS
      * Usamos o reverse() para que a venda mais recente apareça no topo.
      */
-    [...historico].reverse().forEach(venda => {
+    historico.reverse().forEach(venda => {
         
         // Trata o ID do pedido (Pega os últimos 6 dígitos do timestamp)
         const pedidoID = venda.id ? venda.id.toString().slice(-6) : "000000";
