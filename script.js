@@ -84,7 +84,7 @@ function render(listaParaExibir = carrinho) {
 function buscar() {
     const termo = getEl("busca").value.toLowerCase();
     const itensFiltrados = carrinho.filter(item => 
-        item.nome.toLowerCase().includes(termo)
+        item.nome.slice(0, termo.length).toLowerCase().includes(termo)
     );
     render(itensFiltrados); // Renderiza apenas o que bate com a pesquisa
 }
