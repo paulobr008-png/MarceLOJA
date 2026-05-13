@@ -230,6 +230,8 @@ function finalizar() {
     localStorage.setItem("ultima_venda", JSON.stringify(venda));
 
     getEl("CFPopup")?.showModal(); // Abre o modal de "Venda Realizada/Recibo"
+    getEl("valor-pago").value = "";
+    getEl("display-troco").innerText = "Troco: R$ 0.00";
 }
 
 /**
